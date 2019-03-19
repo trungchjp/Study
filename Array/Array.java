@@ -14,106 +14,146 @@ import java.util.Random;
  */
 public class Array {
 
-    int[] array = new int[32]; 
-    
-    
-    
+    int defaultCapacity = 32;
+    int wrongNumber = -1;
+    private int size = 0;
+    int[] items = new int[defaultCapacity]; 
+       
+    /*
+    number of items array can hold
+    Time complexity: O(1)    
+    */
     public int capacity() {
-        return array.length;
+        return items.length;
     }
     
+    /*
+    Return number of items stored in Array
+    Time complexity: O(1)    
+    */
     public int size(){
-        int count = 0;
-        for(int i = 0; i < array.length; i++) {
-            if(array[i] != 0) {
-                count ++;
-            }
-        }
-        return count;
+        return size;
     }
     
-    public boolean isEmpty(){
+    /*
+    Check DynamicArray is empty or not. Return True if empty, False if not
+    Time complexity: O(1)    
+    */
+    public boolean empty(){
         return size() == 0;
     }
     
-    public int at(int index) {
+    /*
+    returns item at given index, blows up if index out of bounds
+    Time complexity: O(1)    
+    */
+    public int at(int index) throws IllegalArgumentException{
         if(index < 0 || index >= size()) {
-            System.out.println("ERROR: index out of reange");
+            throw new IllegalArgumentException("ERROR: index out of range");  
         } else {
-            return array[index];
-        }
-        return -1;
+            return items[index];
+        }   
     }
     
-    public void push(int item) {
+    /*
+    Add given item to the end of Array
+    Time complexity: O(1)    
+    */
+    public void push(int item)  {
         insert(size(), item);
     }
     
+    /*
+    Insert item at index 0
+    Time complexity: O(n)    
+    */
      public void prepend(int item) {
          insert(0, item);
     }
      
-     public void insert(int index, int item) {
-        if(0 > index && index >= size()) {           
-            System.out.println("ERROR: index out of reange");
+    /*
+    Inserts item at index, shifts that index's value and trailing elements to the right
+    Time complexity: O(n)    
+    */
+    public void insert(int index, int item) throws IllegalArgumentException{
+        if(index < 0 || index > size()) {           
+            throw new IllegalArgumentException("ERROR: index out of range");
+        } else {
+            resize();
+            for(int i = size() ; i > index ; i--) {
+                items[i] = items[i - 1];
+            }
+            items[index] = item;
+            size ++;
         }
-        reSize();
-        for(int i = size() ; i > index ; i--) {
-            array[i] = array[i - 1];
-        }
-        array[index] = item;
+        
     }
      
-    public int pop() {       
-        return array[size()-1];
+    /*
+    Remove from end, return value
+    Time complexity: O(1)    
+    */
+    public int pop() throws IllegalArgumentException{
+        if(size() == 0){
+            throw new IllegalArgumentException("ERROR: index out of range");
+        }
+        int lastItem = items[size() -1];
+        delete(size()-1);
+        return lastItem;
     }
     
-    public void delete(int index) {
+    /*
+    Delete item at index, shifting all trailing elements left
+    Time complexity: O(n)    
+    */
+    public void delete(int index) throws IllegalArgumentException{
         if(index < 0 || index >= size()) {
-            System.out.println("ERROR: index out of reange");
+            throw new IllegalArgumentException("ERROR: index out of range");
         }
         for(int i = index; i < size(); i++) {
-            array[i] = array[i + 1];
+            items[i] = items[i + 1];
         }
-        reSize();
+        size--;
+        resize();
     }
     
+    /*
+    Remove all items with given value
+    Time complexity: O(n)    
+    */
     public void remove(int item) {
         int count = 0;
         int[] newArray = new int[capacity()];
         for (int i = 0; i < size(); i ++) {            
-            if(array[i] != item) {
-                newArray[count] = array[i];
+            if(items[i] != item) {
+                newArray[count] = items[i];
                 count ++;
             }
         }
-        array = newArray;
-        reSize();
+        items = newArray;
+        size = count;
+        resize();
     }
     
+    /*
+    Looks for value and returns first index with that value, -1 if not found
+    Time complexity: O(n)    
+    */
     public int find(int item) {
         for(int i = 0; i < size(); i++) {
-            if(array[i] == item) {
+            if(items[i] == item) {
                 return i;
             }
         }
-        return -1;
-    }
+        return wrongNumber;
+    } 
     
-    public void print() {
-        for(int i = 0; i < array.length; i++) {
-            System.out.print(array[i] + " ");
-        }
-        System.out.println("\n");
-    }
-    
-    public void random() {
-        for(int i = 0; i < array.length; i++){
-            array[i] = (int) ((Math.random() * 10) + 1);
-        }
-    }
-    
-    public void reSize() {
+    /*
+    When you reach capacity, resize to double the size
+    When popping an item, if size is 1/4 of capacity, resize to half
+    Time complexity: O(n)    
+    */
+    public void resize() {
         int newCapacity = 1;
         if(size() == capacity()) {
             newCapacity = capacity() * 2;
@@ -124,10 +164,24 @@ public class Array {
         }
         int[] newArray = new int[newCapacity];
         for(int i =0; i < size(); i++) {
-            newArray[i] = array[i];
+            newArray[i] = items[i];
         }
-        array = newArray;
+        items = newArray;
     }
     
+    public void print() {
+        for(int i = 0; i < items.length; i++) {
+            System.out.print(items[i] + " ");
+        }
+        System.out.println("\n");
+    }
     
+    public void random() {
+        for(int i = 0; i < items.length; i++){
+            items[i] = (int) ((Math.random() * 10) + 1);
+        }
+        size = items.length;
+    }
+
+
 }

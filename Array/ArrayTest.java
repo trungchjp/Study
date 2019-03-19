@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import array.Array;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -19,40 +20,22 @@ import array.Array;
  */
 public class ArrayTest {
     
-    public ArrayTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     @Test
-    public void testMain() {
-        
-        String[] args = null;
-        
-    }
-
-    @Test
-    public void testCapacity() {
+    public void testCapacity() throws Exception {
         Array instance = new Array();
+        instance.push(4);
+        instance.push(5);
+        instance.push(3);
+        instance.push(8);
+        assertEquals(instance.capacity(), 16);
+        instance.random();
+        instance.push(5);
         assertEquals(instance.capacity(), 32);
     }
 
     @Test
-    public void testSize() {
+    public void testSize() throws Exception {
         Array instance = new Array();
         instance.push(3);
         instance.push(2);
@@ -60,11 +43,11 @@ public class ArrayTest {
     }
 
     @Test
-    public void testIsEmpty() {
+    public void testEmpty() {
         Array instance = new Array();
         instance.random();
-        System.out.print("Test isEmpty : ");
-        System.out.println(instance.isEmpty());
+        System.out.print("Test empty : ");
+        System.out.println(instance.empty());
     }
 
     @Test
@@ -74,12 +57,17 @@ public class ArrayTest {
         instance.push(5);
         instance.push(2);
         instance.push(3);
-        System.out.print("Test at : ");
-        System.out.println(instance.at(2));
+        try {
+            System.out.print("Test at : ");
+            System.out.println(instance.at(2));
+        } catch (IllegalArgumentException e) {
+            System.out.print("Test at : ");
+            System.out.println(instance.at(20));
+        }
     }
 
     @Test
-    public void testPush() {
+    public void testPush(){
         Array instance = new Array();
         instance.push(1);
         instance.push(5);
@@ -91,7 +79,7 @@ public class ArrayTest {
     }
 
     @Test
-    public void testPrepend() {
+    public void testPrepend()  {
         Array instance = new Array();
         instance.push(1);
         instance.push(5);
@@ -102,22 +90,33 @@ public class ArrayTest {
     }
 
     @Test
-    public void testInsert() {
+    public void testInsert()  {
         Array instance = new Array();
         instance.random();
-        instance.insert(5, 2);
-        System.out.println("Size : " + instance.size());
-        System.out.print("Test insert : ");
-        instance.print();
+        try {
+            instance.insert(5, 2);
+            System.out.println("Size : " + instance.size());
+            System.out.print("Test insert : ");
+            instance.print();
+        } catch (IllegalArgumentException e) {
+            instance.insert(50, 2);
+            System.out.println("Size : " + instance.size());
+            System.out.print("Test insert : ");
+            instance.print();
+        }
     }
-
+    
     @Test
-    public void testPop() {
+    public void testPop(){
         Array instance = new Array();
-        instance.push(1);
-        instance.push(5);
-        instance.push(6);
-        assertEquals(instance.pop(), 6);
+        try {
+            instance.push(1);
+            instance.push(5);
+            instance.push(6);
+            assertEquals(instance.pop(), 6);
+        } catch (IllegalArgumentException e) {
+            assertEquals(instance.pop(), 6);
+        }
     }
 
     @Test
@@ -127,13 +126,19 @@ public class ArrayTest {
         instance.push(5);
         instance.push(2);
         instance.push(3);
-        instance.delete(0);
-        System.out.print("Test delete : ");
-        instance.print();
+        try {
+            instance.delete(2);
+            System.out.print("Test delete : ");
+            instance.print();
+        } catch (IllegalArgumentException e) {
+            instance.delete(90);
+            System.out.print("Test delete : ");
+            instance.print();
+        }
     }
 
     @Test
-    public void testRemove() {
+    public void testRemove() throws Exception {
         Array instance = new Array();
         instance.push(1);
         instance.push(5);
@@ -141,32 +146,18 @@ public class ArrayTest {
         instance.push(3);
         instance.push(2);
         instance.remove(2);
-        System.out.print("Test remove :");
+        System.out.print("Test remove : ");
         instance.print();
     }
 
     @Test
-    public void testFind() {
+    public void testFind() throws Exception {
         Array instance = new Array();
         instance.push(1);
         instance.push(5);
         instance.push(2);
         assertEquals(instance.find(2), 2);
     }
-
-    @Test
-    public void testPrint() {
-        Array instance = new Array();
-        System.out.print("Test print :");
-        instance.print();
-    }
-
-    @Test
-    public void testRandom() {
-        Array instance = new Array();
-        instance.random();
-    }
-    
     
     
 }
